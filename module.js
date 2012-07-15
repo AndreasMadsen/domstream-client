@@ -8,16 +8,19 @@
    */
   function Document(document) {
     this.document = document;
+
+    this.elemCache = [];
+    this.nodeCache = [];
   }
 
   // export constructor function
-  var enterpoint = function (document) { return new Document(document); };
+  var enterpoint = function (doc) { return new Document(doc); };
   enterpoint.Document = Document;
   enterpoint.Search = Search;
   enterpoint.Node = Node,
   enterpoint.NO_ENDING_TAG;
 
-  if (module && module.exports === exports) {
+  if (typeof module === 'object' && module !== null && module.exports === exports) {
     module.exports = enterpoint;
   } else {
     this.domstream = enterpoint;
@@ -34,12 +37,10 @@
     this.document = document;
     this.tree = tree;
 
-    this.elemCache = [];
-    this.nodeCache = [];
-
     this.onlyFlag = false;
     this.onlySearch = false;
 
+    this.searchFilled = false;
     this.searchList = {
       'id': null,
       'tag': null,
@@ -57,6 +58,7 @@
 
   Search.prototype.elem = function (tagname) {
     this._prepearMatch();
+    this.searchFilled = true;
 
     var searchList = this.searchList;
 
@@ -76,6 +78,7 @@
 
   Search.prototype.attr = function (name, match) {
     this._prepearMatch();
+    this.searchFilled = true;
 
     var searchList = this.searchList;
     var query = searchList.attr;
@@ -122,12 +125,15 @@
   };
 
   Search.prototype.toArray = function () {
-    var self = this;
-
-    if (this.searchList.length !== 0) {
+    if (this.searchFilled) {
       this.nodeList = performSearch(this);
       this.filled = true;
-      this.searchList = [];
+      this.searchFilled = false;
+      this.searchList = {
+        'id': null,
+        'tag': null,
+        'attr': []
+      };
 
       // throw if more search requests are made
       if (this.onlyFlag) {
@@ -140,7 +146,7 @@
 
     var map = [];
     for (var i = 0, l = realNodes.length; i < l; i++) {
-      map.push(Node.create(self.document, realNodes[i]));
+      map.push(Node.create(this.document, realNodes[i]));
     }
 
     return map;
@@ -171,7 +177,7 @@
 
     // search by id
     if (searchList.id) {
-      temp = document.getElementById(searchList.id);
+      temp = search.tree.getElementById(searchList.id);
       if (temp === null) return [];
 
       return listSearch([temp], only, {
@@ -183,7 +189,8 @@
 
     // search by tagname
     if (searchList.tag) {
-      temp = document.getElementsByTagName(searchList.tag);
+      temp = search.tree.getElementsByTagName(searchList.tag);
+
       return listSearch(temp, only, {
         id: null,
         tag: null,
@@ -193,7 +200,7 @@
 
     // search tree
     temp = [];
-    searchChildrens(listSearch.attr, search.document, temp, search.onlyFlag);
+    searchChildrens(searchList.attr, search.tree, temp, search.onlyFlag);
     return temp;
   }
 
