@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "author": "Andreas Madsen <amwebdk@gmail.com>",
   "scripts": {
-    "test": "blow test/simple/* --port=11000 --address=localhost --index=test/index.html --style=tdd"
+    "test": "blow test/simple/* --port=11000 --address=localhost --index=test/index.html --style=bdd"
   },
   "main": "./module.js",
   "repository" : {

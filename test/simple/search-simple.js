@@ -5,34 +5,34 @@
 
 var assert = chai.assert;
 
-suite('testing document search', ready(function(){
+describe('iting document search', ready(function(){
 
   var iframe = document.getElementById('content');
   var content = iframe.contentDocument || iframe.contentWindow.document;
 
   var doc = domstream(content);
 
-  suite('when searching for a missing element using', function(){
+  describe('when searching for a missing element using', function(){
 
-    suite('tagname',
+    describe('tagname',
           expectNoResult(doc.find().elem('missing')));
 
-    suite('attribute name',
+    describe('attribute name',
           expectNoResult(doc.find().attr('missing')));
 
-    suite('attribute value',
+    describe('attribute value',
           expectNoResult(doc.find().attr('rel', 'missing')));
 
-    suite('attribute RegExp',
+    describe('attribute RegExp',
           expectNoResult(doc.find().attr('rel', /missing/)));
 
-    suite('tagname followed by attribute value',
+    describe('tagname followed by attribute value',
           expectNoResult(doc.find().elem('link').attr('data-match', '1')));
 
-    suite('attribute followed by tagname value',
+    describe('attribute followed by tagname value',
           expectNoResult(doc.find().attr('data-match', '1').elem('missing')));
 
-    suite('multiply steps', expectNoResult(function () {
+    describe('multiply steps', expectNoResult(function () {
       var search = doc.find();
 
       // this will perform a real search for all <link> element
@@ -54,42 +54,42 @@ suite('testing document search', ready(function(){
         search = search();
       }
 
-      test('toValue returns false', function () {
+      it('toValue returns false', function () {
         assert.isFalse(search.toValue());
       });
 
-      test('toArray returns empty array', function () {
+      it('toArray returns empty array', function () {
         assert.lengthOf(search.toArray(), 0);
       });
     };
   }
 
-  suite('when searching with .only() using', function () {
+  describe('when searching with .only() using', function () {
 
     var links = [
       content.getElementsByTagName('link')[0],
       content.getElementsByTagName('link')[1]
     ];
 
-    suite('tagname',
+    describe('tagname',
           expectOneResult(doc.find().only().elem('link'), links[0]));
 
-    suite('attribute name',
+    describe('attribute name',
           expectOneResult(doc.find().only().attr('rel'), links[0]));
 
-    suite('attribute value',
+    describe('attribute value',
           expectOneResult(doc.find().only().attr('rel', 'stylesheet'), links[0]));
 
-    suite('attribute RegExp',
-          expectOneResult(doc.find().only().attr('href', /^file_(2|3)\.css$/), links[1]));
+    describe('attribute RegExp',
+          expectOneResult(doc.find().only().attr('data-href', /^file_(2|3)\.css$/), links[1]));
 
-    suite('tagname followed by attribute value',
+    describe('tagname followed by attribute value',
           expectOneResult(doc.find().only().elem('link').attr('rel', 'stylesheet'), links[0]));
 
-    suite('attribute followed by tagname value',
+    describe('attribute followed by tagname value',
           expectOneResult(doc.find().only().attr('rel', 'stylesheet').elem('link'), links[0]));
 
-    suite('multiply steps with only at start', function () {
+    describe('multiply steps with only at start', function () {
       var search = doc.find();
 
       // this will perform a real search for the first <link> element
@@ -101,40 +101,39 @@ suite('testing document search', ready(function(){
       // search result
       var error = null;
       try {
-        search.attr('href', 'file_2.css').toValue(); // throw
+        search.attr('data-href', 'file_2.css').toValue(); // throw
       } catch (e) {
         error = e;
       } finally {
-        test('it should throw', function (error) {
+        it('it should throw', function () {
           assert.instanceOf(error, Error);
         });
       }
     });
 
-    suite('multiply steps with only at middle', expectOneResult(function () {
+    describe('multiply steps with only at middle', expectOneResult(function () {
         var search = doc.find();
 
         // this will perform a real search for all <link> element
         search.elem('link').toValue();
 
         // find second link element
-        search.only().attr('href', 'file_2.css'); // no throw
+        search.only().attr('data-href', 'file_2.css'); // no throw
 
         return search;
     }, links[1]));
 
-    suite('multiply steps with only at end', expectOneResult(function () {
+    describe('multiply steps with only at end', expectOneResult(function () {
         var search = doc.find();
 
         // this will perform a real search for all <link> element
         search.elem('link').toValue();
 
         // find second link element
-        search.attr('href', 'file_2.css').only(); // no throw
+        search.attr('data-href', 'file_2.css').only(); // no throw
 
         return search;
     }, links[1]));
-
   });
 
   function expectOneResult(search, result) {
@@ -143,39 +142,39 @@ suite('testing document search', ready(function(){
         search = search();
       }
 
-      test('toValue returns an element', function () {
-        assert.strictEqual(search.toValue().elem, result);
+      it('toValue returns an element', function () {
+        assert.ok(search.toValue().elem === result);
       });
 
-      test('toArray returns array with one item', function () {
+      it('toArray returns array with one item', function () {
         assert.lengthOf(search.toArray(), 1);
-        assert.strictEqual(search.toArray()[0].elem, result);
+        assert.ok(search.toArray()[0].elem === result);
       });
     };
   }
 
-  var items = content.getElementsByTagName('li');
+  describe('when searching using', function () {
+    var items = content.getElementsByTagName('li');
 
-  suite('when searching using', function () {
-    suite('tagname',
+    describe('tagname',
           expectResult(doc.find().elem('li'), items));
 
-    suite('attribute name',
+    describe('attribute name',
           expectResult(doc.find().attr('data-match'), items));
 
-    suite('attribute value',
+    describe('attribute value',
           expectResult(doc.find().attr('data-match', '1'), [ items[0], items[2], items[3] ]));
 
-    suite('attribute RegExp',
+    describe('attribute RegExp',
           expectResult(doc.find().attr('data-match', /^(2|3)$/), [ items[1], items[4], items[5] ]));
 
-    suite('tagname followed by attribute value',
+    describe('tagname followed by attribute value',
           expectResult(doc.find().elem('li').attr('data-match', '1'), [ items[0], items[2], items[3] ]));
 
-    suite('attribute followed by tagname value',
+    describe('attribute followed by tagname value',
           expectResult(doc.find().attr('data-match', '1').elem('li'), [ items[0], items[2], items[3] ]));
 
-    suite('multiply steps', expectResult(function () {
+    describe('multiply steps', expectResult(function () {
         var search = doc.find();
 
         // this will perform a real search for all <li> element
@@ -193,22 +192,27 @@ suite('testing document search', ready(function(){
     var length = results.length;
 
     return function () {
-      test('toValue returns an element', function () {
+      if (search instanceof Function) {
+        search = search();
+      }
+
+      it('toValue returns an element', function () {
         assert.lengthOf(search.toValue(), length);
 
-        search.toValue().forEach(function (node, index) {
-          assert.strictEqual(node.elem, results[index]);
-        });
+        var cache = search.toValue();
+        for (var i = 0, l = length; i < l; i++) {
+          assert.ok(cache[i].elem === results[i]);
+        }
       });
 
-      test('toArray returns array with one item', function () {
+      it('toArray returns array with one item', function () {
         assert.lengthOf(search.toArray(), length);
 
-        search.toArray().forEach(function (node, index) {
-          assert.strictEqual(node.elem, results[index]);
-        });
+        var cache = search.toArray();
+        for (var i = 0, l = length; i < l; i++) {
+          assert.ok(cache[i].elem === results[i]);
+        }
       });
     };
   }
-
 }));
