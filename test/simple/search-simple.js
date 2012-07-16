@@ -5,7 +5,7 @@
 
 var assert = chai.assert;
 
-describe('iting document search', ready(function(){
+describe('testing document search', ready(function(){
 
   var iframe = document.getElementById('content');
   var content = iframe.contentDocument || iframe.contentWindow.document;
