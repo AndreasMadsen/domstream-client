@@ -279,7 +279,7 @@
     this.elem = elem;
 
     // precalculate these, since they in any case will be used
-    this._isRoot = elem === document;
+    this._isRoot = elem.nodeType === 9;
 
     if (this._isRoot === false) {
       this._tagName = elem.tagName.toLowerCase();
@@ -328,7 +328,7 @@
   };
 
   Node.prototype.getParent = function () {
-    if (this.isRoot) throw new Error('root has no parent');
+    if (this._isRoot) throw new Error('root has no parent');
 
     return Node.create(this.document, this.elem.parentNode);
   };
@@ -418,6 +418,8 @@
   };
 
   Node.prototype.getContent = function () {
+    if (this._isSingleton) throw new Error('can not get content from singleton element');
+
     return this.elem.innerHTML;
   };
 
