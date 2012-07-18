@@ -3,9 +3,9 @@
  * MIT License
  */
 
-var assert = chai.assert;
-
 describe('testing node simple', blow.readyBind(function(done){
+  var assert = chai.assert;
+
   common.createTemplate(function (content) {
     var doc = domstream(content);
 
