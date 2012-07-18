@@ -5,34 +5,33 @@
 
 var assert = chai.assert;
 
-describe('testing deep document search', ready(function(){
+describe('testing deep document search', blow.readyBind(function(done){
+  common.createTemplate(function (content) {
+    var doc = domstream(content);
 
-  var iframe = document.getElementById('content');
-  var content = iframe.contentDocument || iframe.contentWindow.document;
+    var menuElem = content.getElementsByTagName('menu')[0];
+    var itemsElem = menuElem.getElementsByTagName('li');
 
-  var doc = domstream(content);
+    describe('searching for menu', function () {
+      var menu = doc.find().only().elem('menu').toValue();
 
-  var menuElem = content.getElementsByTagName('menu')[0];
-  var itemsElem = menuElem.getElementsByTagName('li');
+      it('the result should match', function () {
+        assert.ok(menu.elem === menuElem);
+      });
 
-  describe('searching for menu', function () {
-    var menu = doc.find().only().elem('menu').toValue();
+      describe('when performing deep search on menu', function () {
+        var items = menu.find().elem('li').toValue();
 
-    it('the result should match', function () {
-      assert.ok(menu.elem === menuElem);
-    });
+        it('only subchildrens should be found', function () {
+          assert.lengthOf(items, 3);
 
-    describe('when performing deep search on menu', function () {
-      var items = menu.find().elem('li').toValue();
-
-      it('only subchildrens should be found', function () {
-        assert.lengthOf(items, 3);
-
-        for (var i = 0, l = items.length; i < l; i++) {
-          assert.ok(items[i].elem === itemsElem[i]);
-        }
+          for (var i = 0, l = items.length; i < l; i++) {
+            assert.ok(items[i].elem === itemsElem[i]);
+          }
+        });
       });
     });
-  });
 
+    done();
+  });
 }));
