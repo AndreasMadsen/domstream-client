@@ -7,7 +7,7 @@
   /** Main document constructor
    */
   function Document(document) {
-    this.document = document;
+    this.tree = document;
 
     this.elemCache = [];
     this.nodeCache = [];
@@ -28,7 +28,7 @@
 
   // bind with search constructor
   Document.prototype.find = function () {
-    return new Search(this, this.document);
+    return new Search(this, this.tree);
   };
 
   /** Search constructor
@@ -362,13 +362,27 @@
   Node.prototype.insert = function (where, content) {
     var elem = this.elem;
 
+    switch (where) {
+      case 'beforebegin':
+      case 'afterend':
+        if (this._isRoot) throw new Error('can not insert content at beforebegin on root element');
+        break;
+
+      case 'afterbegin':
+      case 'beforeend':
+        if (this._isSingleton) throw new Error('can not insert content intro singleton element');
+        break;
+
+      default:
+        throw new Error('did not understand first argument');
+    }
+
     if (elem.insertAdjacentHTML) {
       elem.insertAdjacentHTML(where, content);
       return this;
     }
 
     // use createContextualFragment as fallback
-    /*
     var fragment = document.createRange().createContextualFragment(content);
 
     switch (where) {
@@ -384,10 +398,7 @@
       case "afterend":
         elem.parentNode.insertBefore(fragment, elem.nextSibling);
         break;
-      default:
-        throw new Error('did not understand first argument');
     }
-    */
 
     return this;
   };
