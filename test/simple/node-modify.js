@@ -188,7 +188,7 @@ describe('testing node modifier', function(){
       var overwrite = domstream(content);
 
       var elemOB = overwrite.find().only().elem('b').toValue();
-      assert.ok(elemOB.elem = content.getElementsByTagName('b')[0]);
+      assert.ok(elemOB.elem === content.getElementsByTagName('b')[0]);
 
       describe('when overwriting content', testResult(function () {
         var node = elemOB.setContent('overwrite');
