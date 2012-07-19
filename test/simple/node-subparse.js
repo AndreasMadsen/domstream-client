@@ -27,45 +27,54 @@ describe('testing node subparser', blow.readyBind(function(done) {
     var ElemAB = doc.find().only().elem('ab').toValue();
     assert.ok(ElemAB.elem === content.getElementsByTagName('ab')[0]);
 
-    describe('when inserting content beforebegin', testResult(function () {
-      return ElemAB.insert('beforebegin', '<ta></ta>');
-    }, '<r><aa></aa><ta></ta><ab><b></b></ab><ac></ac></r>'));
+    describe('when inserting content', function () {
 
-    describe('when inserting content afterbegin', testResult(function () {
-        return ElemAB.insert('afterbegin', '<tb></tb>');
-    }, '<r><aa></aa><ta></ta><ab><tb></tb><b></b></ab><ac></ac></r>'));
+      describe('beforebegin', testResult(function () {
+        return ElemAB.insert('beforebegin', '<ta></ta>');
+      }, '<r><aa></aa><ta></ta><ab><b></b></ab><ac></ac></r>'));
 
-    describe('when inserting content beforeend', testResult(function () {
-      return ElemAB.insert('beforeend', '<tc></tc>');
-    }, '<r><aa></aa><ta></ta><ab><tb></tb><b></b><tc></tc></ab><ac></ac></r>'));
+      describe('afterbegin', testResult(function () {
+          return ElemAB.insert('afterbegin', '<tb></tb>');
+      }, '<r><aa></aa><ta></ta><ab><tb></tb><b></b></ab><ac></ac></r>'));
 
-    describe('when inserting content afterend', testResult(function () {
-      return ElemAB.insert('afterend', '<td></td>');
-    }, '<r><aa></aa><ta></ta><ab><tb></tb><b></b><tc></tc></ab><td></td><ac></ac></r>'));
+      describe('beforeend', testResult(function () {
+        return ElemAB.insert('beforeend', '<tc></tc>');
+      }, '<r><aa></aa><ta></ta><ab><tb></tb><b></b><tc></tc></ab><ac></ac></r>'));
 
-    describe('when appending content', testResult(function () {
-      return ElemAB.append('<te></te>');
-    }, '<r><aa></aa><ta></ta><ab><tb></tb><b></b><tc></tc><te></te></ab><td></td><ac></ac></r>'));
+      describe('afterend', testResult(function () {
+        return ElemAB.insert('afterend', '<td></td>');
+      }, '<r><aa></aa><ta></ta><ab><tb></tb><b></b><tc></tc></ab><td></td><ac></ac></r>'));
+    });
 
-    describe('when overwriting content', testResult(function () {
-      return ElemAB.append('<tf></tf>');
-    }, '<r><aa></aa><ta></ta><ab><tb></tb><b></b><tc></tc><te></te><tf></tf></ab><td></td><ac></ac></r>'));
+    describe('when appending', function () {
+      describe('content', testResult(function () {
+        return ElemAB.append('<te></te>');
+      }, '<r><aa></aa><ta></ta><ab><tb></tb><b></b><tc></tc><te></te></ab><td></td><ac></ac></r>'));
 
-    describe('when overwriting content', testResult(function () {
-      return ElemAB.setContent('<tb></tb><tc></tc>');
-    }, '<r><aa></aa><ta></ta><ab><tb></tb><tc></tc></ab><td></td><ac></ac></r>'));
+      describe('content again', testResult(function () {
+        return ElemAB.append('<tf></tf>');
+      }, '<r><aa></aa><ta></ta><ab><tb></tb><b></b><tc></tc><te></te><tf></tf></ab><td></td><ac></ac></r>'));
+    });
 
-    describe('when removeing content', testResult(function () {
-      return ElemAB.trim();
-    }, '<r><aa></aa><ta></ta><ab></ab><td></td><ac></ac></r>'));
+    describe('when overwriting', function () {
+      describe('content', testResult(function () {
+        return ElemAB.setContent('<tb></tb><tc></tc>');
+      }, '<r><aa></aa><ta></ta><ab><tb></tb><tc></tc></ab><td></td><ac></ac></r>'));
+    });
 
-    describe('when removeing element', testResult(function () {
-      return ElemAB.remove();
-    }, '<r><aa></aa><ta></ta><td></td><ac></ac></r>'));
+    describe('when removeing', function () {
+      describe('content', testResult(function () {
+        return ElemAB.trim();
+      }, '<r><aa></aa><ta></ta><ab></ab><td></td><ac></ac></r>'));
 
-    describe('when removeing root element', expectError(function () {
-      root.remove();
-    }));
+      describe('element', testResult(function () {
+        return ElemAB.remove();
+      }, '<r><aa></aa><ta></ta><td></td><ac></ac></r>'));
+
+      describe('root element', expectError(function () {
+        root.remove();
+      }));
+    });
 
     done();
   });
