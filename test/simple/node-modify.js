@@ -129,7 +129,6 @@ describe('testing node modifier', function(){
             it('should match expected result', function (done) {
               var content = '<a>bb<b  ab="new" aaa="set">ab<br ac ad="d"/><d ae af="f"></d>be</b><e></e><hr/></a>';
               common.createContent(content, function (content) {
-                console.log(content.getElementsByTagName('b')[0].innerHTML, inner);
                 assert.equal(content.getElementsByTagName('b')[0].innerHTML, inner);
                 done();
               });
