@@ -241,7 +241,7 @@ describe('testing node modifier', function(){
 
       it('the tree should match', function (done) {
         common.createContent(content, function (content) {
-          assert.strictEqual(node.document.tree.innerHTML, content.innerHTML);
+          assert.strictEqual(node.document.tree.documentElement.innerHTML, content.documentElement.innerHTML);
           done();
         });
       });
