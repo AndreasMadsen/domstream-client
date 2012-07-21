@@ -159,18 +159,18 @@ describe('testing node subparser', blow.readyBind(function(done) {
     };
   }
 
- function expectError(fn) {
+  function expectError(fn) {
     return function () {
-      var error = null;
-      try {
-        fn();
-      } catch (e) {
-        error = e;
-      } finally {
-        it('should throw an error', function () {
-          assert.instanceOf(error, Error);
-        });
-      }
+      it('should throw an error', function () {
+        var error = null;
+        try {
+          fn();
+        } catch (e) {
+          error = e;
+        } finally {
+            assert.instanceOf(error, Error);
+        }
+      });
     };
   }
 }));
