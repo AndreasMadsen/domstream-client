@@ -81,7 +81,9 @@ describe('testing node subparser', blow.readyBind(function(done) {
 
   function testResult(fn, content) {
     return function () {
-      var node = fn();
+      var node; before(function () {
+        node = fn();
+      });
 
       it('the tree should match', function (done) {
         common.createContent(content, function (content) {
