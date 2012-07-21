@@ -3,12 +3,11 @@
  * MIT License
  */
 
-describe('testing node modifier', function(){
+describe('testing node modifier', function () {
   var assert = chai.assert;
   var content = '<a><b aa ab=b><br ac ad="d"/><d ae af="f"></d></b><e></e><hr/></a>';
 
   blow.ready(function (done) {
-
     common.createContent(content, function (content) {
       var doc = domstream(content);
 
@@ -27,50 +26,62 @@ describe('testing node modifier', function(){
 
       // test attribute modification
       describe('test attribute modification', function () {
-        describe('when removeing attribute', testResult(function () {
-          var node = elemB.removeAttr('aa');
+        describe('when removeing attribute', testResult({
+          expect: '<a><b  ab=b><br ac ad="d"/><d ae af="f"></d></b><e></e><hr/></a>',
 
-          describe('getting the attribute', function () {
-            var value = node.getAttr('aa');
+          topic: function () {
+            return elemB.removeAttr('aa');
+          },
 
-            it('should return null', function () {
+          'getting the attribute': {
+            topic: function (node) {
+              return node.getAttr('aa');
+            },
+
+            'should return null': function (value) {
               assert.isNull(value);
-            });
-          });
-
-          return node;
-        }, '<a><b  ab=b><br ac ad="d"/><d ae af="f"></d></b><e></e><hr/></a>'));
+            }
+          }
+        }));
 
         describe('when removeing attribute from root', expectError(function () {
           root.removeAttr('fake');
         }));
 
-        describe('when modifying attribute', testResult(function () {
-          var node = elemB.setAttr('ab', 'new');
+        describe('when modifying attribute', testResult({
+          expect: '<a><b  ab="new"><br ac ad="d"/><d ae af="f"></d></b><e></e><hr/></a>',
 
-          describe('getting the attribute', function () {
-            var value = node.getAttr('ab');
+          topic: function () {
+            return elemB.setAttr('ab', 'new');
+          },
 
-            it('should return new value', function () {
+          'getting the attribute': {
+            topic: function (node) {
+              return node.getAttr('ab');
+            },
+
+            'should return new value': function (value) {
               assert.equal(value, 'new');
-            });
-          });
+            }
+          }
+        }));
 
-          return node;
-        }, '<a><b  ab="new"><br ac ad="d"/><d ae af="f"></d></b><e></e><hr/></a>'));
+        describe('when adding attribute', testResult({
+          expect: '<a><b  ab="new" aaa="set"><br ac ad="d"/><d ae af="f"></d></b><e></e><hr/></a>',
 
-        describe('when adding attribute', testResult(function () {
-          var node = elemB.setAttr('aaa', 'set');
+          topic: function () {
+            return elemB.setAttr('aaa', 'set');
+          },
 
-          describe('getting the attribute', function () {
-            var value = node.getAttr('aaa');
+          'getting the attribute': {
+            topic: function (node) {
+              return node.getAttr('aaa');
+            },
 
-            it('should return set value', function () {
+            'should return set value': function (value) {
               assert.equal(value, 'set');
-            });
-          });
-
-          return node;
+            }
+          }
         }, '<a><b  ab="new" aaa="set"><br ac ad="d"/><d ae af="f"></d></b><e></e><hr/></a>'));
 
         describe('when modifying attribute from root', expectError(function () {
@@ -80,106 +91,106 @@ describe('testing node modifier', function(){
 
       // test content modification
       describe('test content modification', function () {
-        describe('when inserting content beforebegin', testResult(function () {
-          var node = elemB.insert('beforebegin', 'bb');
+        describe('when inserting content beforebegin', testResult({
+          expect: '<a>bb<b  ab="new" aaa="set"><br ac ad="d"/><d ae af="f"></d></b><e></e><hr/></a>',
 
-          describe('getting parent content', function () {
-            var outer = elemA.getContent();
+          topic: function () {
+            return elemB.insert('beforebegin', 'bb');
+          },
 
-            it('should match expected result', function (done) {
-              var content = '<a>bb<b  ab="new" aaa="set"><br ac ad="d"/><d ae af="f"></d></b><e></e><hr/></a>';
-              common.createContent(content, function (content) {
-                assert.equal(content.getElementsByTagName('a')[0].innerHTML, outer);
-                done();
-              });
-            });
-          });
+          'getting parent content': {
+            topic: function () {
+              return elemA.getContent();
+            },
 
-          return node;
-        }, '<a>bb<b  ab="new" aaa="set"><br ac ad="d"/><d ae af="f"></d></b><e></e><hr/></a>'));
+            'should match expected result': function (outer) {
+              assert.equal(content.getElementsByTagName('a')[0].innerHTML, outer);
+            }
+          }
+        }));
 
         describe('when inserting content beforebegin on root', expectError(function () {
           root.insert('beforebegin', 'bb');
         }));
 
-        describe('when inserting content afterbegin', testResult(function () {
-          var node = elemB.insert('afterbegin', 'ab');
+        describe('when inserting content afterbegin', testResult({
+          expect: '<a>bb<b  ab="new" aaa="set">ab<br ac ad="d"/><d ae af="f"></d></b><e></e><hr/></a>',
 
-          describe('getting content', function () {
-            var inner = node.getContent();
+          topic: function () {
+            return elemB.insert('afterbegin', 'ab');
+          },
 
-            it('should match expected result', function (done) {
-              var content = '<a>bb<b  ab="new" aaa="set">ab<br ac ad="d"/><d ae af="f"></d></b><e></e><hr/></a>';
-              common.createContent(content, function (content) {
-                assert.equal(content.getElementsByTagName('b')[0].innerHTML, inner);
-                done();
-              });
-            });
-          });
+          'getting content': {
+            topic: function (node) {
+              return node.getContent();
+            },
 
-          return node;
-        }, '<a>bb<b  ab="new" aaa="set">ab<br ac ad="d"/><d ae af="f"></d></b><e></e><hr/></a>'));
+            'should match expected result': function (inner) {
+              assert.equal(content.getElementsByTagName('b')[0].innerHTML, inner);
+            }
+          }
+        }));
 
-        describe('when inserting content beforeend', testResult(function () {
-          var node = elemB.insert('beforeend', 'be');
+        describe('when inserting content beforeend', testResult({
+          expect: '<a>bb<b  ab="new" aaa="set">ab<br ac ad="d"/><d ae af="f"></d>be</b><e></e><hr/></a>',
 
-          describe('getting content', function () {
-            var inner = node.getContent();
+          topic: function () {
+            return elemB.insert('beforeend', 'be');
+          },
 
-            it('should match expected result', function (done) {
-              var content = '<a>bb<b  ab="new" aaa="set">ab<br ac ad="d"/><d ae af="f"></d>be</b><e></e><hr/></a>';
-              common.createContent(content, function (content) {
-                assert.equal(content.getElementsByTagName('b')[0].innerHTML, inner);
-                done();
-              });
-            });
-          });
+          'getting content': {
+            topic: function (node) {
+              return node.getContent();
+            },
 
-          return node;
-        }, '<a>bb<b  ab="new" aaa="set">ab<br ac ad="d"/><d ae af="f"></d>be</b><e></e><hr/></a>'));
+            'should match expected result': function (inner) {
+              assert.equal(content.getElementsByTagName('b')[0].innerHTML, inner);
+            }
+          }
+        }));
 
-        describe('when inserting content afterend', testResult(function () {
-          var node = elemB.insert('afterend', 'ae');
+        describe('when inserting content afterend', testResult({
+          expect: '<a>bb<b  ab="new" aaa="set">ab<br ac ad="d"/><d ae af="f"></d>be</b>ae<e></e><hr/></a>',
 
-          describe('getting parent content', function () {
-            var outer = elemA.getContent();
+          topic: function () {
+            return elemB.insert('afterend', 'ae');
+          },
 
-            it('should match expected result', function (done) {
-              var content = '<a>bb<b  ab="new" aaa="set">ab<br ac ad="d"/><d ae af="f"></d>be</b>ae<e></e><hr/></a>';
-              common.createContent(content, function (content) {
-                assert.equal(content.getElementsByTagName('a')[0].innerHTML, outer);
-                done();
-              });
-            });
-          });
+          'getting parent content': {
+            topic: function () {
+              return elemA.getContent();
+            },
 
-          return node;
-        }, '<a>bb<b  ab="new" aaa="set">ab<br ac ad="d"/><d ae af="f"></d>be</b>ae<e></e><hr/></a>'));
+            'should match expected result': function (outer) {
+              assert.equal(content.getElementsByTagName('a')[0].innerHTML, outer);
+            }
+          }
+        }));
 
         describe('when inserting content afterend on root', expectError(function () {
           root.insert('afterend', 'ae');
         }));
 
-        describe('when appending content', testResult(function () {
-          var node = elemB.append('ap');
+        describe('when appending content', testResult({
+          expect: '<a>bb<b  ab="new" aaa="set">ab<br ac ad="d"/><d ae af="f"></d>beap</b>ae<e></e><hr/></a>',
 
-          describe('getting content', function () {
-            var inner = node.getContent();
+          topic: function () {
+            return elemB.append('ap');
+          },
 
-            it('should match expected result', function (done) {
-              var content = '<a>bb<b  ab="new" aaa="set">ab<br ac ad="d"/><d ae af="f"></d>beap</b>ae<e></e><hr/></a>';
-              common.createContent(content, function (content) {
-                assert.equal(content.getElementsByTagName('b')[0].innerHTML, inner);
-                done();
-              });
-            });
-          });
+          'getting content': {
+            topic: function (node) {
+              return node.getContent();
+            },
 
-          return node;
-        }, '<a>bb<b  ab="new" aaa="set">ab<br ac ad="d"/><d ae af="f"></d>beap</b>ae<e></e><hr/></a>'));
+            'should match expected result': function (inner) {
+              assert.equal(content.getElementsByTagName('b')[0].innerHTML, inner);
+            }
+          }
+        }));
       });
 
-    done();
+      done();
     });
   });
 
@@ -190,19 +201,23 @@ describe('testing node modifier', function(){
       var elemOB = overwrite.find().only().elem('b').toValue();
       assert.ok(elemOB.elem === content.getElementsByTagName('b')[0]);
 
-      describe('when overwriting content', testResult(function () {
-        var node = elemOB.setContent('overwrite');
+      describe('when overwriting content', testResult({
+        expect: '<a><b aa ab=b>overwrite</b><e></e><hr/></a>',
 
-        describe('getting content', function () {
-          var inner = node.getContent();
+        topic: function () {
+          return elemOB.setContent('overwrite');
+        },
 
-          it('should match expected result', function () {
+        'getting content': {
+          topic: function (node) {
+            return node.getContent();
+          },
+
+          'should match expected result': function (inner) {
             assert.equal(inner, 'overwrite');
-          });
-        });
-
-        return node;
-      }, '<a><b aa ab=b>overwrite</b><e></e><hr/></a>'));
+          }
+        }
+      }));
 
       done();
     });
@@ -215,36 +230,71 @@ describe('testing node modifier', function(){
       var elemRB = remove.find().only().elem('b').toValue();
       assert.ok(elemRB.elem === content.getElementsByTagName('b')[0]);
 
-      describe('when removeing content', testResult(function () {
-        var node = elemRB.trim();
+      describe('when removeing content', testResult({
+        expect: '<a><b aa ab=b></b><e></e><hr/></a>',
 
-        describe('getting content', function () {
-          var inner = node.getContent();
+        topic: function () {
+          return elemRB.trim();
+        },
 
-          it('should match expected result', function () {
+        'getting content': {
+          topic: function (node) {
+            return node.getContent();
+          },
+
+          'should match expected result': function (inner) {
             assert.equal(inner, '');
-          });
-        });
-
-        return node;
-      }, '<a><b aa ab=b></b><e></e><hr/></a>'));
+          }
+        }
+      }));
 
       done();
     });
   });
 
-  function testResult(fn, content) {
-    return function () {
-      var node; before(function () {
-        node = fn();
-      });
+  function testResult(batch) {
+    var content = batch.expect;
+    delete batch.expect;
 
-      it('the tree should match', function (done) {
-        common.createContent(content, function (content) {
-          assert.strictEqual(node.document.tree.documentElement.innerHTML, content.documentElement.innerHTML);
-          done();
-        });
+    batch['the content should match'] = function (node, done) {
+      common.createContent(content, function (content) {
+        assert.strictEqual(node.document.tree.documentElement.innerHTML, content.documentElement.innerHTML);
+        done();
       });
+    };
+
+    return createMochaTest(batch, {});
+  }
+
+  function createMochaTest(batch, prev) {
+    return function () {
+
+      if (batch.topic) {
+        // setup topic
+        var topic = batch.topic;
+        delete batch.topic;
+
+        var curr = {};
+        before(function () {
+          curr.result = topic(prev.result);
+        });
+      }
+
+      for (var key in batch) (function (key) {
+        if (batch[key] instanceof Function) {
+          if (batch[key].length == 2) {
+            it(key, function (done) {
+              batch[key](curr.result, done);
+            });
+          } else {
+            it(key, function () {
+              batch[key](curr.result);
+            });
+          }
+        } else {
+          describe(key, createMochaTest(batch[key], curr));
+        }
+      })(key);
     };
   }
 
