@@ -31,6 +31,10 @@
     return new Search(this, this.tree);
   };
 
+  Document.prototype.container = function () {
+    return this;
+  };
+
   /** Search constructor
    */
   function Search(document, tree) {

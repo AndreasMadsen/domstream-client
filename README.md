@@ -49,8 +49,7 @@ This is not supported, sugestions and patches are wellcome.
 
 #### document.container(list)
 
-This is not supported and it is unlikly it will ever be supported. It is because there
-is not stream interface, so it would be a waste of code.
+This dosen't do anything, since there is no `ReadStream` interface.
 
 ### Search
 
