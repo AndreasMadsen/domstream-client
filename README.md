@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/AndreasMadsen/domstream-client.png)](http://travis-ci.org/AndreasMadsen/domstream-client)
 #domstream-client
 
 > domstream-client aims provide the same API as [domstream](https://github.com/AndreasMadsen/domstream).
