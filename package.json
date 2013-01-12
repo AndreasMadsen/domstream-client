@@ -1,7 +1,7 @@
 {
   "name": "domstream-client",
   "description": "domstream API on the client",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "author": "Andreas Madsen <amwebdk@gmail.com>",
   "scripts": {
     "test": "blow --listen=localhost:11000 --index=test/index.html test/simple/*"
@@ -18,7 +18,7 @@
     "html"
   ],
   "devDependencies": {
-    "blow" :  "0.5.x"
+    "blow" :  "0.6.x"
   },
   "license": "MIT",
   "engines": {
